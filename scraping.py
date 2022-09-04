@@ -10,7 +10,7 @@ def scrape_all():
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=True)
 
-    news_title, new_paragraph = mars_news(browser)
+    news_title, news_paragraph = mars_news(browser)
 
     # Run all scraping functions and store results in dictionary 
     data = {
@@ -20,14 +20,19 @@ def scrape_all():
          "facts": mars_facts(),
          "last_modified": dt.datetime.now()
          }
+    # Stop webdriver and return data
+    browser.quit()
+    return data
 
-# Scrape Mars News
+
 def mars_news(browser):
+
+    # Scrape Mars News
     # Visit the mars nasa news site
     url = 'https://redplanetscience.com/'
     browser.visit(url)
 
-    # OPtional delay for loading page
+    # Optional delay for loading page
     browser.is_element_present_by_css('div.list_text', wait_time=1)
 
     # Convert the browser html to a soup object and then quit the browser
@@ -47,21 +52,10 @@ def mars_news(browser):
     
     return news_title, news_p
 
-
-    # Use the parent element to find the first `a` tag and save it as `news_title`
-    news_title = slide_elem.find('div', class_='content_title').get_text()
-    news_title
-
-
-    # Use the parent element to find the paragraph text
-    news_p = slide_elem.find('div', class_='article_teaser_body').get_text()
-    news_p
-
-
-# ### Featured Images
+ # ### Featured Images
 def featured_image(browser):
 
-# Visit URL
+    # Visit URL
     url = 'https://spaceimages-mars.com'
     browser.visit(url)
 
@@ -99,9 +93,8 @@ def mars_facts():
     df.set_index('description', inplace=True)
 
     # Convert dataframe into HTML format, add bootstrap
-    return df.to_html()
-    
-    # Stop webdriver and return data
-    browser.quit()
+    return df.to_html(classes="table table-striped")
+if __name__ == "__main__":
 
-    return data
+    # If runnignas script, print scraped data
+    print(scrape_all())
