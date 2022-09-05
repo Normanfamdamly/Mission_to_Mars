@@ -9,7 +9,7 @@ import datetime as dt
 def scrape_all():
     # Initiate headless driver for deplaoyment
     executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=True)
+    browser = Browser('chrome', **executable_path, headless=False)
 
     news_title, news_paragraph = mars_news(browser)
 
@@ -77,8 +77,7 @@ def featured_image(browser):
 
     # Use the base url to create an absolute url
     img_url = f'https://spaceimages-mars.com/{img_url_rel}'
-    img_url
-
+   
     return img_url
 
 def mars_facts():
@@ -95,7 +94,8 @@ def mars_facts():
 
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
+
 if __name__ == "__main__":
 
-    # If runnignas script, print scraped data
+    # If running as script, print scraped data
     print(scrape_all())
